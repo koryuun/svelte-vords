@@ -1,6 +1,6 @@
 <script>
     import { fly, fade } from 'svelte/transition'
-    import { createEventDispatcher } from 'svelte';
+    import { createEventDispatcher } from 'svelte'
 
     export let word
     export let state
@@ -11,6 +11,12 @@
     const dispatch = createEventDispatcher()
 
     let selected, correct, incorrect
+
+    function onMouseDown(event) {  
+        if(event.button == 0) {
+            dispatch('wordClick', {index})
+        }
+    }
 
     $: {
         selected = state.selected
@@ -27,7 +33,7 @@
     {#if word !== null}
         <div class="word-button" 
             class:selected class:correct class:incorrect
-            on:click={()=> dispatch('wordClick', {index})}
+            on:mousedown={onMouseDown}
             in:fly={
                 { duration:500, x:200 * flyDirection, delay:flyDelay}
             }
@@ -44,6 +50,7 @@
 <style>    
     .word-button {        
         display: flex;
+        font-size: 1.5rem;
         text-align: center;        
         justify-content: center;
         align-items: center;
@@ -51,12 +58,14 @@
         margin: 0rem;
         border-style: outset;        
         border-width: 0.2rem;
-        border-radius: 1.5rem;             
+        border-radius: 2.0rem;             
         overflow: hidden;                       
-        flex-grow: 1;        
+        flex-grow: 1;
+        
+        cursor: default;
     }
 
-    .selected {
+    .selected {        
         border-style: inset;
         background-color: #DEDEFF; 
         border-color: #4848B4;
@@ -76,9 +85,9 @@
     }
     
     .container {      
-        margin: 0.2rem;  
-        height: 3rem;
-        width: 15rem;
+        margin: 0.3rem;  
+        height: 4rem;
+        width: 20rem;
         display: flex;                
     }
 

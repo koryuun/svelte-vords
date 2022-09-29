@@ -9,6 +9,11 @@
     
     const dispatch = createEventDispatcher()
 
+    // При первом заполнении слов используется дополнительная задержка
+    // transition, которая увеличивается с каждым словом.
+    // При замене угаданного слова задержка 0
+    let flyDelay
+
     let selected = null
 
     export function getSelected() {
@@ -21,9 +26,12 @@
 
     export function init() {
         resetSelection()
+        flyDelay = 150
     }
     
     function changeSelection(index) {
+        flyDelay = 0
+
         if(selected === null) {
             selected = index
         } else if(selected === index) {
@@ -52,7 +60,7 @@
         word={getWord(wordID)} {index} 
         state={{selected:selected === index, correct}} 
         {flyDirection} 
-        flyDelay={index * 150}
+        flyDelay={index * flyDelay}
         on:wordClick={wordClick}
         on:wordRemoved
         />      

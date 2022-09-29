@@ -58,6 +58,10 @@ class LearnBundle {
     hasMoreWords() {
         return this.wordSet.length > 0
     }
+
+    getWordCount() {
+        return this.wordSet.length
+    }
     
     getWord(id) {
         return this.words.get(id).word        

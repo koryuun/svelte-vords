@@ -1,10 +1,15 @@
 <script>    
     import _ from 'lodash'
+
+    import { createEventDispatcher } from 'svelte'
     
     import { loadWords } from './LearnBundle'
+    import { playCorrect, playWrong } from './sound'
     import WordList from "./WordList.svelte"    
 
     const VISIBLE_WORDS_COUNT = 5
+
+    const dispatch = createEventDispatcher()
 
     let wordIDs = new Array(VISIBLE_WORDS_COUNT).fill(null);
     let transIDs = new Array(VISIBLE_WORDS_COUNT).fill(null);
@@ -32,6 +37,18 @@
 
     function getTrans(wordID) {
         return wordID === null ? null : learnBundle.getTranslation(wordID)
+    }
+
+    function getVisibleWordCount() {
+        return wordIDs.reduce( (total, value) =>  total + (value ? 1: 0), 0)
+    }
+
+    function getTotalWordCount() {        
+        if(learnBundle) {            
+            return learnBundle.getWordCount() + getVisibleWordCount()
+        } else {
+            return 0
+        }
     }
 
 
@@ -62,6 +79,7 @@
             fillWords()            
             wordList.init()
             transList.init()
+            dispatchWordCountChangedEvent()
         })
 
     }
@@ -74,6 +92,9 @@
             transIDs[i] = null
             
         }
+        learnBundle = null
+
+        dispatchWordCountChangedEvent()
     }
 
     function hasCorrectPair() {
@@ -123,13 +144,20 @@
             return
         }
         correct = learnBundle.isCorrectPair(wordIDs[wordIdx], transIDs[transIdx])
-        setTimeout(() => onEndShowResult(wordIdx, transIdx), 1000)
+        if(correct) {
+            playCorrect()
+        } else {
+            playWrong()
+        }
+
+        setTimeout(() => onEndShowResult(wordIdx, transIdx), 500)
     }
 
-    function onWordRemoved() {
+    function onWordRemoved() {        
         if(correct === true) {        
             correctPairRemoveCounter++
             if(correctPairRemoveCounter == 2) {
+                dispatchWordCountChangedEvent()
                 resetSelection();
                 correctPairRemoveCounter = 0
                 //Здесь должно быть добавление новой пары взамен удалённой
@@ -144,6 +172,10 @@
                 
             }
         }
+    }
+
+    function dispatchWordCountChangedEvent() {
+        dispatch('wordCountChanged', {wordCount:getTotalWordCount()})
     }
 
 </script>
@@ -168,6 +200,6 @@
     .visible-words {
         display: flex;      
         width: min-content;
-        grid-column: 2 / 3;        
+        grid-column: 2 / -2;        
     }
 </style>
