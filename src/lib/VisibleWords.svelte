@@ -70,9 +70,8 @@
         transIDs = _.shuffle(initialTrans)        
     }
 
-    export function start() {        
-        
-        loadWords().then(result => {
+    export function start(fileName) {                
+        loadWords(fileName).then(result => {
             learnBundle = result   
             lastCorrectPair.wordIdx = null
             lastCorrectPair.transIdx = null
@@ -80,6 +79,7 @@
             wordList.init()
             transList.init()
             dispatchWordCountChangedEvent()
+            dispatch('gameStart')
         })
 
     }
@@ -95,6 +95,7 @@
         learnBundle = null
 
         dispatchWordCountChangedEvent()
+        dispatch('gameOver')
     }
 
     function hasCorrectPair() {
@@ -164,12 +165,11 @@
                 if(learnBundle.hasMoreWords())
                 {
                     addNewPair()
-                } else {
-                    console.log("Больше нет слов")
-                }
-
-
-                
+                } else {                    
+                    if(getVisibleWordCount() == 0) {
+                        dispatch('gameOver')
+                    }
+                }                
             }
         }
     }

@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-const apiUrl = 'words/words.csv'
+const apiUrl = 'words/'
 
 let words 
 
@@ -81,8 +81,8 @@ class LearnBundle {
     }
 }
 
-export async function loadWords() {
-    return fetch(apiUrl)        
+export async function loadWords(fileName) {
+    return fetch(apiUrl + fileName)        
         .then(res => res.text())
         .then(x => {
             const allWords = parseCSV(x).map( (wordPair, idx) => {

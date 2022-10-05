@@ -8,9 +8,13 @@
   let child
 
   let wordsLeft = 0
+  let fileName
+
+  // Идёт игра
+  let gameOn = false
   
   function onStart() {    
-    child.start()
+    child.start(fileName)
   }
 
   function onEnd() {
@@ -29,10 +33,21 @@
     {wordsLeft}
   </div>
   <div class="buttons">
-    <button on:click={onStart}>Старт</button>  
-    <button on:click={onEnd}>Конец</button>    
+    {#if gameOn}
+      <button on:click={onEnd}>Конец</button>  
+    {:else}
+      <select bind:value={fileName}>
+        <option value='words.csv'>Продвинутый английский</option>
+        <option value='sanat.csv'>Простой финский</option>
+      </select>
+      <button on:click={onStart}>Старт</button>  
+    {/if}
+       
   </div>
-  <VisibleWords bind:this={child} on:wordCountChanged={onVisibleWordCountChanged}/>   
+  <VisibleWords bind:this={child} 
+    on:gameStart={()=> gameOn = true}
+    on:gameOver={()=> gameOn = false}
+    on:wordCountChanged={onVisibleWordCountChanged}/>   
   <div class="content">
     <hr/>
   </div>   
@@ -60,7 +75,7 @@
     justify-self: center;    
   }
 
-  button {
+  button, select{
     font-size: 1.3rem;
   }
 
