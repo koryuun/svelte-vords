@@ -14,8 +14,13 @@ function parseCSV(csvStr) {
 
 class LearnBundle {
     constructor(words) {
-        this.words = new Map(words)
 
+        
+        this.words = new Map(words.map(wordInfo => {           
+            const sound = new Audio(wordInfo[1].sound)
+            return [wordInfo[0], {...wordInfo[1], sound }]
+        }))
+        
         this.wordSet = [...this.words.keys()]
         this.transSet = [...this.words.keys()]
 
@@ -86,7 +91,7 @@ export async function loadWords(fileName) {
         .then(res => res.text())
         .then(x => {
             const allWords = parseCSV(x).map( (wordPair, idx) => {
-                return [idx, {'word':wordPair[0], 'trans':wordPair[1]}]
+                return [idx, {'word':wordPair[0], 'trans':wordPair[1], 'sound': wordPair[2]}]
             })            
             words =_.sampleSize(allWords, 20)
             return new LearnBundle(words)
