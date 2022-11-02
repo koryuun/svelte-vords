@@ -70,8 +70,8 @@
         transIDs = _.shuffle(initialTrans)        
     }
 
-    export function start(fileName) {                
-        loadWords(fileName).then(result => {
+    export function start(deckName) {                
+        loadWords(deckName).then(result => {
             learnBundle = result   
             lastCorrectPair.wordIdx = null
             lastCorrectPair.transIdx = null
@@ -140,6 +140,12 @@
     function onChangeSelection() {        
         const wordIdx = wordList.getSelected()
         const transIdx = transList.getSelected()
+
+        if(wordIdx !== null) {
+            learnBundle.pronounce(wordIDs[wordIdx])
+        }
+
+
         if(wordIdx === null || transIdx === null) {
             correct = null
             return

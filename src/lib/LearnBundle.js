@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-const apiUrl = 'words/'
+const decksPath = 'decks'
 
 let words 
 
@@ -13,11 +13,11 @@ function parseCSV(csvStr) {
 }
 
 class LearnBundle {
-    constructor(words) {
-
+    constructor(words, deckPath) {
         
         this.words = new Map(words.map(wordInfo => {           
-            const sound = new Audio(wordInfo[1].sound)
+            const sound = new Audio()            
+            //new Audio(wordInfo[1].sound)
             return [wordInfo[0], {...wordInfo[1], sound }]
         }))
         
@@ -84,17 +84,23 @@ class LearnBundle {
     isCorrectPair(wordID, transID) {        
         return wordID !== null && wordID === transID
     }
+
+    pronounce(id) {
+        this.words.get(id).sound.play()
+    }
 }
 
-export async function loadWords(fileName) {
-    return fetch(apiUrl + fileName)        
+export async function loadWords(deckName) {
+    const deckPath = [decksPath, deckName].join('/')
+    const csvPah = [deckPath, 'deck.csv'].join('/')    
+    return fetch(csvPah)        
         .then(res => res.text())
         .then(x => {
             const allWords = parseCSV(x).map( (wordPair, idx) => {
                 return [idx, {'word':wordPair[0], 'trans':wordPair[1], 'sound': wordPair[2]}]
             })            
             words =_.sampleSize(allWords, 20)
-            return new LearnBundle(words)
+            return new LearnBundle(words, deckPath)
         })        
 }
 

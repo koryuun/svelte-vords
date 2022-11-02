@@ -8,13 +8,13 @@
   let child
 
   let wordsLeft = 0
-  let fileName
+  let deckName
 
   // Идёт игра
   let gameOn = false
   
   function onStart() {    
-    child.start(fileName)
+    child.start(deckName)
   }
 
   function onEnd() {
@@ -36,9 +36,9 @@
     {#if gameOn}
       <button on:click={onEnd}>Конец</button>  
     {:else}
-      <select bind:value={fileName}>
-        <option value='words.csv'>Продвинутый английский</option>
-        <option value='sanat.csv'>Простой финский</option>
+      <select bind:value={deckName}>
+        <option value='words'>Продвинутый английский</option>
+        <option value='sanat'>Простой финский</option>
       </select>
       <button on:click={onStart}>Старт</button>  
     {/if}
@@ -48,9 +48,11 @@
     on:gameStart={()=> gameOn = true}
     on:gameOver={()=> gameOn = false}
     on:wordCountChanged={onVisibleWordCountChanged}/>   
+  <!--
   <div class="content">
     <hr/>
   </div>   
+  -->
 </main>
 
 <style>
