@@ -14,10 +14,18 @@ function parseCSV(csvStr) {
 
 class LearnBundle {
     constructor(words, deckPath) {
+        const soundPath = [deckPath, 'sound'].join('/')
+
         
-        this.words = new Map(words.map(wordInfo => {           
-            const sound = new Audio()            
-            //new Audio(wordInfo[1].sound)
+        this.words = new Map(words.map(wordInfo => {   
+            let soundName = wordInfo[1].sound
+            if(!soundName) {
+                // Если нет имени файла для произношения,
+                // пытаемся создать его из слова.
+                soundName = wordInfo[1].word + '.mp3'
+            }
+            const sound = new Audio([soundPath, soundName].join('/'))            
+            console.log(sound)           
             return [wordInfo[0], {...wordInfo[1], sound }]
         }))
         
@@ -27,6 +35,7 @@ class LearnBundle {
         this.getWord = this.getWord.bind(this)
         this.getTranslation = this.getTranslation.bind(this)
     }
+    
 
     removePair(wordID, transID) {
         _.pull(this.wordSet, wordID)
