@@ -11,6 +11,14 @@
     const dispatch = createEventDispatcher()
 
     let selected, correct, incorrect
+    
+    function onIntroStart() {
+        dispatch('wordAdded')
+    }
+
+    function onOutroEnd() {        
+        dispatch('wordRemoved')                
+    }
 
     function onMouseDown(event) {  
         if(event.button == 0) {
@@ -38,7 +46,8 @@
                 { duration:500, x:200 * flyDirection, delay:flyDelay}
             }
             out:fade={{ duration:500}}
-            on:outroend={()=> dispatch('wordRemoved')}
+            on:introstart={onIntroStart}            
+            on:outroend={onOutroEnd}
             >            
             {word}
         </div>            

@@ -1,11 +1,14 @@
 <script>    
     import _ from 'lodash'
 
-    import { createEventDispatcher } from 'svelte'
+    import { createEventDispatcher, onMount } from 'svelte'
     
     import { loadWords } from './LearnBundle'
     import { playCorrect, playWrong } from './sound'
     import WordList from "./WordList.svelte"    
+
+
+    export let deckName
 
     const VISIBLE_WORDS_COUNT = 5
 
@@ -20,15 +23,10 @@
     let transList
 
     let lastCorrectPair = {wordIdx:null, transIdx:null}
-
-
-    // Увеличивается на 1 в момент, когда анимация удаления правильного слова или перевода
-    // окончилась. 
-    // Нужно для определения момента, когда удаление правильной пары полностьо окончено.    
-    let correctPairRemoveCounter = 0
-
-
+    
     let learnBundle = null
+
+    onMount(start)
     
 
     function getWord(wordID) {
@@ -45,7 +43,7 @@
 
     function getTotalWordCount() {        
         if(learnBundle) {            
-            return learnBundle.getWordCount() + getVisibleWordCount()
+            return learnBundle.getWordCount() + wordList.getWordCount()//getVisibleWordCount()
         } else {
             return 0
         }
@@ -70,7 +68,10 @@
         transIDs = _.shuffle(initialTrans)        
     }
 
-    export function start(deckName) {                
+    function start() {   
+        //wordIDs = new Array(VISIBLE_WORDS_COUNT).fill(null);
+        //transIDs = new Array(VISIBLE_WORDS_COUNT).fill(null);   
+
         loadWords(deckName).then(result => {
             learnBundle = result   
             lastCorrectPair.wordIdx = null
@@ -91,11 +92,11 @@
             wordIDs[i] = null
             transIDs[i] = null
             
-        }
+        }        
         learnBundle = null
 
         dispatchWordCountChangedEvent()
-        dispatch('gameOver')
+        //dispatch('gameOver')
     }
 
     function hasCorrectPair() {
@@ -161,23 +162,24 @@
     }
 
     function onWordRemoved() {        
-        if(correct === true) {        
-            correctPairRemoveCounter++
-            if(correctPairRemoveCounter == 2) {
-                dispatchWordCountChangedEvent()
-                resetSelection();
-                correctPairRemoveCounter = 0
-                //Здесь должно быть добавление новой пары взамен удалённой
-                if(learnBundle.hasMoreWords())
-                {
-                    addNewPair()
-                } else {                    
-                    if(getVisibleWordCount() == 0) {
-                        dispatch('gameOver')
-                    }
-                }                
-            }
+
+        if(correct === true) {  
+            console.log('correct=', correct)                              
+            dispatchWordCountChangedEvent()
+            resetSelection();            
+            //Здесь должно быть добавление новой пары взамен удалённой
+            if(learnBundle.hasMoreWords())
+            {
+                addNewPair()
+            } else {                    
+                if(wordList.isEmpty()) {
+                    dispatch('gameOver')
+                }
+            }                            
+        } else if(wordList.isEmpty()) {
+            dispatch('gameOver')
         }
+
     }
 
     function dispatchWordCountChangedEvent() {
@@ -192,13 +194,13 @@
         bind:this={wordList} wordIDs={wordIDs} getWord={getWord}  flyDirection={-1}
         {correct}
         on:selection={onChangeSelection}
+        on:wordAdded={dispatchWordCountChangedEvent}
         on:wordRemoved={onWordRemoved}
         />    
     <WordList
         bind:this={transList} wordIDs={transIDs} getWord={getTrans} flyDirection={1}
         {correct}
-        on:selection={onChangeSelection}
-        on:wordRemoved={onWordRemoved}
+        on:selection={onChangeSelection}        
         />        
 </div>
 

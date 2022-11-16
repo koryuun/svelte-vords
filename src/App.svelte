@@ -14,11 +14,11 @@
   let gameOn = false
   
   function onStart() {    
-    child.start(deckName)
+    gameOn = true    
   }
 
   function onEnd() {
-    //content = ''
+    //content = ''    
     child.end()
   }
 
@@ -29,30 +29,36 @@
 </script>
 
 <main>    
-  <div class="info">
-    {wordsLeft}
-  </div>
+  {#if gameOn}
+    <div class="info">
+      {wordsLeft}
+    </div>
+  {/if}
   <div class="buttons">
     {#if gameOn}
-      <button on:click={onEnd}>Конец</button>  
-    {:else}
-      <select bind:value={deckName}>
-        <option value='words'>Продвинутый английский</option>
-        <option value='sanat'>Простой финский</option>
-      </select>
-      <button on:click={onStart}>Старт</button>  
+      <button on:click={onEnd}>Конец</button>      
     {/if}
        
   </div>
-  <VisibleWords bind:this={child} 
-    on:gameStart={()=> gameOn = true}
-    on:gameOver={()=> gameOn = false}
-    on:wordCountChanged={onVisibleWordCountChanged}/>   
-  <!--
-  <div class="content">
-    <hr/>
-  </div>   
-  -->
+  {#if gameOn}
+    <VisibleWords 
+      deckName={deckName}
+      bind:this={child}       
+      on:gameOver={()=> gameOn = false}      
+      on:wordCountChanged={onVisibleWordCountChanged}/>           
+  {:else}
+    <div class="deck-selection">
+      <select bind:value={deckName} size="4">
+        <optgroup label="Английский">
+          <option value='words'>Слова</option>
+        </optgroup>
+        <optgroup label="Финский">
+          <option value='sanat'>Слова</option>
+        </optgroup>
+      </select>
+      <button on:click={onStart}>Старт</button>  
+    </div>
+  {/if}
 </main>
 
 <style>
@@ -77,12 +83,13 @@
     justify-self: center;    
   }
 
+  .deck-selection {    
+    display: flex;
+    grid-column: 2 / -2;    
+  }
+
   button, select{
     font-size: 1.3rem;
   }
-
-  .content {
-    grid-column: 1 / -1;
-    grid-row: 3 / 4;
-  }
+  
 </style>

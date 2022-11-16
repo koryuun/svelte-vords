@@ -14,6 +14,8 @@
     // При замене угаданного слова задержка 0
     let flyDelay
 
+    let wordCount = 0  
+
     let selected = null
 
     export function getSelected() {
@@ -24,9 +26,17 @@
         selected = null
     }
 
-    export function init() {
+    export function init() {        
         resetSelection()
         flyDelay = 150
+    }
+
+    export function isEmpty() {
+        return wordCount === 0
+    }
+
+    export function getWordCount() {
+        return wordCount
     }
     
     function changeSelection(index) {
@@ -39,7 +49,7 @@
         } else {
             selected = index
         }
-    }
+    }    
 
     function wordClick(event) {    
         if(correct !== null) {
@@ -49,7 +59,16 @@
         dispatch('selection')
     }
     
-    
+
+    function onWordAdded() {
+        wordCount++
+        dispatch('wordAdded')
+    }
+
+    function onWordRemoved() {
+        wordCount--
+        dispatch('wordRemoved')
+    }
 
 </script>
 
@@ -62,7 +81,8 @@
         {flyDirection} 
         flyDelay={index * flyDelay}
         on:wordClick={wordClick}
-        on:wordRemoved
+        on:wordAdded={onWordAdded}
+        on:wordRemoved={onWordRemoved}
         />      
     {/each}
 </div>
