@@ -138,11 +138,12 @@
         }                
     }
 
-    function onChangeSelection() {        
+    function onSelect() {       
+        console.log('onSelect') 
         const wordIdx = wordList.getSelected()
         const transIdx = transList.getSelected()
 
-        if(wordIdx !== null) {
+        if(wordIdx !== null && transIdx === null) {
             learnBundle.pronounce(wordIDs[wordIdx])
         }
 
@@ -193,14 +194,14 @@
     <WordList 
         bind:this={wordList} wordIDs={wordIDs} getWord={getWord}  flyDirection={-1}
         {correct}
-        on:selection={onChangeSelection}
+        on:selection={onSelect}
         on:wordAdded={dispatchWordCountChangedEvent}
         on:wordRemoved={onWordRemoved}
         />    
     <WordList
         bind:this={transList} wordIDs={transIDs} getWord={getTrans} flyDirection={1}
         {correct}
-        on:selection={onChangeSelection}        
+        on:selection={onSelect}        
         />        
 </div>
 

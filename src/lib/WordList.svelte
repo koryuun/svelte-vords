@@ -42,12 +42,15 @@
     function changeSelection(index) {
         flyDelay = 0
 
+        //!!! Из этого двойного условия можно убрать повтор?
         if(selected === null) {
             selected = index
+            dispatch('selection')
         } else if(selected === index) {
             selected = null
         } else {
             selected = index
+            dispatch('selection')
         }
     }    
 
@@ -56,7 +59,7 @@
             return
         }
         changeSelection(event.detail.index)
-        dispatch('selection')
+        //dispatch('selection')        
     }
     
 

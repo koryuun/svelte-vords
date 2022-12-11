@@ -95,7 +95,12 @@ class LearnBundle {
     }
 
     pronounce(id) {
-        this.words.get(id).sound.play()
+        const HAVE_ENOUGH_DATA = 4
+
+        const sound = this.words.get(id).sound
+        if(sound.readyState === HAVE_ENOUGH_DATA) {
+            sound.play()
+        }
     }
 }
 
