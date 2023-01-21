@@ -209,6 +209,11 @@
     .visible-words {
         display: flex;      
         width: min-content;
-        grid-column: 2 / -2;        
+        grid-column: 2 / -2; 
+        grid-row: 2;
+        /*!!!
+        justify-self: center;
+        align-self: center;       
+        */
     }
 </style>
