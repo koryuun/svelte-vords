@@ -73,8 +73,8 @@
   .info {
     font-size: 1.3rem;
 
-    grid-column: 2 / 2;
-    grid-row: span 1;    
+    grid-column: 2;
+    grid-row: 1;    
   }
 
   .buttons {
@@ -85,7 +85,8 @@
 
   .deck-selection {    
     display: flex;
-    grid-column: 2 / -2;    
+    grid-column: 2 / -2;
+    grid-row: 2;    
   }
 
   button, select{
