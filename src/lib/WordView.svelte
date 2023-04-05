@@ -72,25 +72,45 @@
         flex-grow: 1;
         
         cursor: default;
+
+        /*!!!*/
+        background-color: #E6E6E6; 
+        border-color: #D9D9D9;
+        color: #000000;
     }
 
     .selected {        
         border-style: inset;
+        /*
         background-color: #DEDEFF; 
         border-color: #4848B4;
         color: #4848B4;
+        */
+        background-color: #B3D1FF; 
+        border-color: #3366CC;
+        color: #FFFFFF;
     }
 
     .correct {        
+        /*
         background-color: #DEFFDE;         
         border-color: #00A000;
         color: #00A000;
+        */
+        background-color: #B3FFB3;         
+        border-color: #99FF99;
+        color: #FFFFFF;
     }
 
-    .incorrect {        
+    .incorrect {       
+        /* 
         background-color: #FFDEDE;         
         border-color: #B44848;
         color: #B44848;
+        */
+        background-color: #FFB3B3;         
+        border-color: #FF9999;
+        color: #FFFFFF;
     }
     
     .container {      

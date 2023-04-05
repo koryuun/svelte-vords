@@ -1,5 +1,6 @@
 <script>
 
+  import './global.css'
   import VisibleWords from "./lib/VisibleWords.svelte";
 
   //const apiUrl = 'http://192.168.108.5:3000/words'
@@ -67,7 +68,7 @@
     grid-template-columns: 1fr auto auto auto 1fr;
     margin: 0 auto;    
     /*width: min-content;*/
-    overflow: hidden;
+    overflow: hidden;    
   }
 
   .info {
