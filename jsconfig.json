@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    //Добвил чтобы заткнут ошибку
+    "ignoreDeprecations": "5.0",
     "moduleResolution": "node",
     "target": "esnext",
     "module": "esnext",
