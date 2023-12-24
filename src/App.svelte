@@ -49,12 +49,13 @@
       on:wordCountChanged={onVisibleWordCountChanged}/>           
   {:else}
     <div class="deck-selection">
-      <select bind:value={deckName} size="4">
+      <select bind:value={deckName} size="5">
         <optgroup label="English">
           <option value='words'>Words</option>
         </optgroup>
         <optgroup label="Suomi">
           <option value='sanat'>Sanat</option>
+          <option value='verbit'>Verbit</option>
         </optgroup>
       </select>
       <button on:click={onStart}>Старт</button>  
