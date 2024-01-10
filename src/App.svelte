@@ -6,8 +6,12 @@
   //const apiUrl = 'http://192.168.108.5:3000/words'
   //const apiUrl = 'words/words.csv'
 
+
+  const version = "0.1"
+
   let child
 
+  let wordsTotal = "?"
   let wordsLeft = 0
   let deckName
 
@@ -30,14 +34,20 @@
 </script>
 
 <main>    
-  {#if gameOn}
+  {#if gameOn}        
     <div class="info">
-      {wordsLeft}
-    </div>
-  {/if}
+      {wordsLeft}/{wordsTotal}    
+    </div> 
+  {:else}    
+    <div class="version">
+      v: {version} | vpw: {window.innerWidth} | dpr: {window.devicePixelRatio}
+    </div> 
+  {/if}  
+
+  
   <div class="buttons">
     {#if gameOn}
-      <button on:click={onEnd}>Конец</button>      
+      <button on:click={onEnd}>❌</button>      
     {/if}
        
   </div>
@@ -58,7 +68,7 @@
           <option value='verbit'>Verbit</option>
         </optgroup>
       </select>
-      <button on:click={onStart}>Старт</button>  
+      <button on:click={onStart}>▶</button>  
     </div>
   {/if}
 </main>
@@ -69,7 +79,13 @@
     grid-template-columns: 1fr auto auto auto 1fr;
     margin: 0 auto;    
     /*width: min-content;*/
-    overflow: hidden;    
+    overflow: hidden;
+  }
+
+  .version {
+    /*font-size: 1.3rem;*/
+    grid-column: 1;
+    grid-row: 1;    
   }
 
   .info {

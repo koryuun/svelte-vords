@@ -114,7 +114,7 @@
     }
     
     .container {      
-        margin: 0.3rem;  
+        margin: 0.3rem; 
         height: 4rem;
         width: 20rem;
         display: flex;                

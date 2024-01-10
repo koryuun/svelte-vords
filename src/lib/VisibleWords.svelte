@@ -1,6 +1,7 @@
 <script>    
+    // @ts-ignore
     import _ from 'lodash'
-
+    
     import { createEventDispatcher, onMount } from 'svelte'
     
     import { loadWords } from './LearnBundle'
@@ -207,8 +208,10 @@
 
 <style>
     .visible-words {
-        display: flex;      
-        width: min-content;
+        display: flex;   
+        flex-wrap: wrap;
+        justify-content: center;                
+        /*width: min-content;*/
         grid-column: 2 / -2; 
         grid-row: 2;
         /*!!!
