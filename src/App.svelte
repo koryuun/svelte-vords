@@ -1,63 +1,32 @@
 <script>
 
   import './global.css'
-  import VisibleWords from "./lib/VisibleWords.svelte";
+  import GameView from './lib/GameView.svelte';
 
   //const apiUrl = 'http://192.168.108.5:3000/words'
   //const apiUrl = 'words/words.csv'
 
+  const version = "0.1.2"
 
-  const version = "0.1"
-
-  let child
-
-  let wordsTotal = "?"
-  let wordsLeft = 0
   let deckName
 
   // Идёт игра
   let gameOn = false
   
-  function onStart() {    
-    gameOn = true    
-  }
-
-  function onEnd() {
-    //content = ''    
-    child.end()
-  }
-
-  function onVisibleWordCountChanged(event) {
-    wordsLeft = event.detail.wordCount
-  }
-    
 </script>
 
 <main>    
-  {#if gameOn}        
-    <div class="info">
-      {wordsLeft}/{wordsTotal}    
-    </div> 
-  {:else}    
+  
+  {#if gameOn}  
+    <GameView 
+      className="game-view-pos"
+      deckName={deckName}
+      on:gameOver={()=> gameOn = false}
+      />
+  {:else}
     <div class="version">
       v: {version} | vpw: {window.innerWidth} | dpr: {window.devicePixelRatio}
     </div> 
-  {/if}  
-
-  
-  <div class="buttons">
-    {#if gameOn}
-      <button on:click={onEnd}>❌</button>      
-    {/if}
-       
-  </div>
-  {#if gameOn}
-    <VisibleWords 
-      deckName={deckName}
-      bind:this={child}       
-      on:gameOver={()=> gameOn = false}      
-      on:wordCountChanged={onVisibleWordCountChanged}/>           
-  {:else}
     <div class="deck-selection">
       <select bind:value={deckName} size="5">
         <optgroup label="English">
@@ -68,12 +37,18 @@
           <option value='verbit'>Verbit</option>
         </optgroup>
       </select>
-      <button on:click={onStart}>▶</button>  
+      <button on:click={() => gameOn = true}>▶</button>  
     </div>
   {/if}
+  
 </main>
 
 <style>
+  :global(.game-view-pos) {    
+    grid-column: 2 / -2;
+    grid-row: 2;
+  }
+
   main {
     display: grid;
     grid-template-columns: 1fr auto auto auto 1fr;
@@ -88,26 +63,13 @@
     grid-row: 1;    
   }
 
-  .info {
-    font-size: 1.3rem;
-
-    grid-column: 2;
-    grid-row: 1;    
-  }
-
-  .buttons {
-    grid-column: -2 / -3;
-    grid-row: span 1;
-    justify-self: center;    
-  }
-
   .deck-selection {    
     display: flex;
     grid-column: 2 / -2;
     grid-row: 2;    
   }
 
-  button, select{
+  select{
     font-size: 1.3rem;
   }
   

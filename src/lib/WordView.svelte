@@ -56,24 +56,26 @@
 
 
 
-<style>    
-    .word-button {        
+<style>            
+    .word-button {                
+        height: 90%;
         display: flex;
-        font-size: 1.5rem;
+        font-size: calc(var(--base) * 0.035 );
         text-align: center;        
         justify-content: center;
         align-items: center;
         
-        margin: 0rem;
+        margin: 0;
         border-style: outset;        
-        border-width: 0.2rem;
-        border-radius: 2.0rem;             
+        border-width: 0.15em;
+        border-radius: 3.0em;
+
         overflow: hidden;                       
         flex-grow: 1;
         
         cursor: default;
 
-        /*!!!*/
+      
         background-color: #E6E6E6; 
         border-color: #D9D9D9;
         color: #000000;
@@ -114,10 +116,10 @@
     }
     
     .container {      
-        margin: 0.3rem; 
-        height: 4rem;
-        width: 20rem;
-        display: flex;                
+        margin: 0.5%;
+        height: 100%;
+        width: 100%;
+        /*display: flex;*/
     }
 
     

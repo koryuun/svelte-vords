@@ -76,7 +76,7 @@
 </script>
 
 
-<div>
+<div class="word-list">
     {#each wordIDs as wordID, index}
       <WordView 
         word={getWord(wordID)} {index} 
@@ -91,10 +91,15 @@
 </div>
 
 
-<style>
-    /*
-    div {        		
-        border-style: solid;
-        border-width: 3px;        
-    }*/
+<style>    
+    .word-list {        		
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0.5%;
+        /*border-style: solid;
+        border-width: 3px;     */        
+        width: 100%;   
+    }
 </style>

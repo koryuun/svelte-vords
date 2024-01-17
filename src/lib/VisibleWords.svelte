@@ -208,15 +208,9 @@
 
 <style>
     .visible-words {
-        display: flex;   
-        flex-wrap: wrap;
-        justify-content: center;                
-        /*width: min-content;*/
-        grid-column: 2 / -2; 
-        grid-row: 2;
-        /*!!!
-        justify-self: center;
-        align-self: center;       
-        */
+        display: flex;           
+        
+        /*background-color: black;*/
+        height: 90%;        
     }
 </style>
