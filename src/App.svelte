@@ -1,17 +1,23 @@
 <script>
 
   import './global.css'
-  import GameView from './lib/GameView.svelte';
+  import GameView from './lib/GameView.svelte'
+  import DeckSelection from './lib/DeckSelection.svelte'
 
   //const apiUrl = 'http://192.168.108.5:3000/words'
   //const apiUrl = 'words/words.csv'
 
-  const version = "0.2.0"
+  const version = "0.2.1"
 
   let deckName
 
   // Идёт игра
   let gameOn = false
+
+  function onDeckSelected (event) {
+    deckName = event.detail.deckName
+    gameOn = true
+  }
   
 </script>
 
@@ -26,19 +32,10 @@
   {:else}
     <div class="version">
       v: {version} | vpw: {window.innerWidth} | dpr: {window.devicePixelRatio}
-    </div> 
-    <div class="deck-selection">
-      <select bind:value={deckName} size="5">
-        <optgroup label="English">
-          <option value='words'>Words</option>
-        </optgroup>
-        <optgroup label="Suomi">
-          <option value='sanat'>Sanat</option>
-          <option value='verbit'>Verbit</option>
-        </optgroup>
-      </select>
-      <button on:click={() => gameOn = true}>▶</button>  
     </div>
+
+    <DeckSelection className="deck-selection-pos" 
+      on:deckSelected={ onDeckSelected } />
   {/if}
   
 </main>
@@ -63,14 +60,9 @@
     grid-row: 1;    
   }
 
-  .deck-selection {    
-    display: flex;
+  :global(.deck-selection-pos) {    
     grid-column: 2 / -2;
     grid-row: 2;    
-  }
-
-  select{
-    font-size: 1.3rem;
   }
   
 </style>

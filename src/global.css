@@ -1,6 +1,7 @@
 body {
     background-repeat: no-repeat;
     background: linear-gradient(#B3D1FF, #FFFFFF);
+    margin: 0;
 }
 
 html {

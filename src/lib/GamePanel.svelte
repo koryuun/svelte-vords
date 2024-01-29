@@ -31,6 +31,7 @@
 
     button {
         font-size: calc(var(--base) * 0.035 );  
+        padding: 0px;
     }
 
     .info {
