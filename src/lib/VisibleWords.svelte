@@ -144,7 +144,7 @@
     function onSelect() {       
         console.log('onSelect') 
         const wordIdx = wordList.getSelected()
-        const transIdx = transList.getSelected()
+        const transIdx = transList.getSelected()        
 
         if(wordIdx !== null && transIdx === null) {
             learnBundle.pronounce(wordIDs[wordIdx])
@@ -157,7 +157,9 @@
         }
         correct = learnBundle.isCorrectPair(wordIDs[wordIdx], transIDs[transIdx])
         if(correct) {
-            playCorrect()
+            if(!learnBundle.pronounce(wordIDs[wordIdx])) {
+                playCorrect()
+            }
         } else {
             playWrong()
         }

@@ -94,13 +94,19 @@ class LearnBundle {
         return wordID !== null && wordID === transID
     }
 
+    // Пытается воспроизвести произношение.
+    // Возвращает, получилось возпроизвести или нет
     pronounce(id) {
         const HAVE_ENOUGH_DATA = 4
 
         const sound = this.words.get(id).sound
-        if(sound.readyState === HAVE_ENOUGH_DATA) {
+
+        const soundReady = sound.readyState === HAVE_ENOUGH_DATA
+
+        if(soundReady) {
             sound.play()
         }
+        return soundReady
     }
 }
 
