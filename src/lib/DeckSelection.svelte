@@ -1,7 +1,11 @@
 <script>
 import { createEventDispatcher } from 'svelte'
 
+import { leftToRight } from './stores'
+
 export let className = ""
+
+
 
 const dispatch = createEventDispatcher()
 
@@ -21,7 +25,10 @@ function clickHandler(deckName) {
 <div class="deck-selection {className}">
     <button on:click={clickHandler("words")} >Words</button>
     <button on:click={clickHandler("sanat")} >Sanat</button>
-    <button on:click={clickHandler("verbit")} >Verbit</button>    
+    <button on:click={clickHandler("verbit")} >Verbit</button>
+    <button on:click={ () => $leftToRight = ! $leftToRight} >
+        {$leftToRight ? "→": "←"}
+    </button>
 </div>
 
 <style>

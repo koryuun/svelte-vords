@@ -5,8 +5,10 @@
     import { createEventDispatcher, onMount } from 'svelte'
     
     import { loadWords } from './LearnBundle'
+    import { leftToRight } from './stores'
     import { playCorrect, playWrong } from './sound'
     import WordList from "./WordList.svelte"    
+
 
 
     export let deckName
@@ -191,19 +193,35 @@
 </script>
 
 
-<div class="visible-words">    
-    <WordList 
-        bind:this={wordList} wordIDs={wordIDs} getWord={getWord}  flyDirection={-1}
-        {correct}
-        on:selection={onSelect}
-        on:wordAdded={dispatchWordCountChangedEvent}
-        on:wordRemoved={onWordRemoved}
-        />    
-    <WordList
-        bind:this={transList} wordIDs={transIDs} getWord={getTrans} flyDirection={1}
-        {correct}
-        on:selection={onSelect}        
-        />        
+<div class="visible-words">
+
+    {#if $leftToRight}
+        <WordList 
+            bind:this={wordList} wordIDs={wordIDs} getWord={getWord}  flyDirection={-1}
+            {correct}
+            on:selection={onSelect}
+            on:wordAdded={dispatchWordCountChangedEvent}
+            on:wordRemoved={onWordRemoved}
+            />    
+        <WordList
+            bind:this={transList} wordIDs={transIDs} getWord={getTrans} flyDirection={1}
+            {correct}
+            on:selection={onSelect}        
+            />            
+    {:else}
+        <WordList 
+        bind:this={transList} wordIDs={transIDs} getWord={getTrans} flyDirection={-1}
+            {correct}
+            on:selection={onSelect}            
+            />    
+        <WordList
+            bind:this={wordList} wordIDs={wordIDs} getWord={getWord}  flyDirection={1}            
+            {correct}
+            on:selection={onSelect}
+            on:wordAdded={dispatchWordCountChangedEvent}
+            on:wordRemoved={onWordRemoved}        
+            />        
+    {/if}
 </div>
 
 <style>
