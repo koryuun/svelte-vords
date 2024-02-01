@@ -5,7 +5,7 @@
     import { createEventDispatcher, onMount } from 'svelte'
     
     import { loadWords } from './LearnBundle'
-    import { leftToRight } from './stores'
+    import { rightToLeft } from './stores'
     import { playCorrect, playWrong } from './sound'
     import WordList from "./WordList.svelte"    
 
@@ -195,42 +195,33 @@
 </script>
 
 
-<div class="visible-words">
-
-    {#if $leftToRight}
-        <WordList 
-            bind:this={wordList} wordIDs={wordIDs} getWord={getWord}  flyDirection={-1}
-            {correct}
-            on:selection={onSelect}
-            on:wordAdded={dispatchWordCountChangedEvent}
-            on:wordRemoved={onWordRemoved}
-            />    
-        <WordList
-            bind:this={transList} wordIDs={transIDs} getWord={getTrans} flyDirection={1}
-            {correct}
-            on:selection={onSelect}        
-            />            
-    {:else}
-        <WordList 
-        bind:this={transList} wordIDs={transIDs} getWord={getTrans} flyDirection={-1}
-            {correct}
-            on:selection={onSelect}            
-            />    
-        <WordList
-            bind:this={wordList} wordIDs={wordIDs} getWord={getWord}  flyDirection={1}            
-            {correct}
-            on:selection={onSelect}
-            on:wordAdded={dispatchWordCountChangedEvent}
-            on:wordRemoved={onWordRemoved}        
-            />        
-    {/if}
+<div class="visible-words" class:right-to-left={$rightToLeft}>        
+    <WordList             
+        bind:this={wordList} wordIDs={wordIDs} getWord={getWord}
+        flyDirection={$rightToLeft ? 1: -1}
+        {correct}
+        on:selection={onSelect}
+        on:wordAdded={dispatchWordCountChangedEvent}
+        on:wordRemoved={onWordRemoved}
+        />    
+    <WordList
+        bind:this={transList} wordIDs={transIDs} getWord={getTrans}
+        flyDirection={$rightToLeft ? -1: 1}
+        {correct}
+        on:selection={onSelect}        
+        />         
 </div>
 
 <style>
     .visible-words {
         display: flex;           
-        
+
         /*background-color: black;*/
         height: 90%;        
     }
+
+    .right-to-left {
+        flex-direction: row-reverse;
+    }
+    
 </style>
