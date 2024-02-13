@@ -15,7 +15,10 @@
 </script>
 
 <div class="game-view {className}">    
-    <GamePanel on:close={()=>child.end()}  {wordsLeft} />
+    <GamePanel 
+        on:close={()=>child.end()}          
+        on:swapLeftRight={() => child.swapLeftAndRight()  }
+        {wordsLeft} />
     <VisibleWords 
       deckName={deckName}
       bind:this={child}       

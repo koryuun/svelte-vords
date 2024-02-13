@@ -18,6 +18,13 @@
 
     let selected = null
 
+    // Временно для опытов
+    let listDiv
+
+    export function getOffsetLeft() {
+        return listDiv.offsetLeft
+    }
+
     export function getSelected() {
         return selected
     }
@@ -37,6 +44,21 @@
 
     export function getWordCount() {
         return wordCount
+    }
+
+    export function startSwapAnimation(distance)
+    {
+        distance = -(distance * flyDirection)
+
+        const animation = [
+            {transform: "translateX(0)"},
+            {transform: `translateX(${distance}px)`}
+        ]
+
+        const timing = {duration: 1000, iterations: 1}
+
+        const animate = listDiv.animate(animation, timing)
+        animate.onfinish = ()=> dispatch("swapAnimationEnd")
     }
     
     function changeSelection(index) {
@@ -76,7 +98,7 @@
 </script>
 
 
-<div class="word-list">
+<div class="word-list" bind:this={listDiv}>
     {#each wordIDs as wordID, index}
       <WordView 
         word={getWord(wordID)} {index} 

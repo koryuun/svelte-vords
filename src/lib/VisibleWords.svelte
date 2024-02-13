@@ -30,7 +30,21 @@
     let learnBundle = null
 
     onMount(start)
-    
+
+    export function swapLeftAndRight() {
+        console.log("swapLeftAndRight")
+
+        const distance = getListsDictance()
+        wordList.startSwapAnimation(distance)
+        transList.startSwapAnimation(distance)
+    }
+
+
+    // Возвращает расстояние между списками слов для анимации
+    function getListsDictance() {
+
+        return Math.abs(wordList.getOffsetLeft() - transList.getOffsetLeft())
+    }
 
     function getWord(wordID) {
         return wordID === null ? null : learnBundle.getWord(wordID)        
@@ -196,7 +210,7 @@
 
 
 <div class="visible-words" class:right-to-left={$rightToLeft}>        
-    <WordList             
+    <WordList            
         bind:this={wordList} wordIDs={wordIDs} getWord={getWord}
         flyDirection={$rightToLeft ? 1: -1}
         {correct}
@@ -208,7 +222,8 @@
         bind:this={transList} wordIDs={transIDs} getWord={getTrans}
         flyDirection={$rightToLeft ? -1: 1}
         {correct}
-        on:selection={onSelect}        
+        on:selection={onSelect}
+        on:swapAnimationEnd={() => rightToLeft.toggle()}     
         />         
 </div>
 

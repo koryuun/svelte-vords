@@ -24,8 +24,7 @@ class LearnBundle {
                 // пытаемся создать его из слова.
                 soundName = wordInfo[1].word + '.mp3'
             }
-            const sound = new Audio([soundPath, soundName].join('/'))            
-            console.log(sound)           
+            const sound = new Audio([soundPath, soundName].join('/'))                        
             return [wordInfo[0], {...wordInfo[1], sound }]
         }))
         

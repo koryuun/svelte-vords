@@ -26,7 +26,7 @@ function clickHandler(deckName) {
     <button on:click={clickHandler("words")} >Words</button>
     <button on:click={clickHandler("sanat")} >Sanat</button>
     <button on:click={clickHandler("verbit")} >Verbit</button>
-    <button on:click={ () => $rightToLeft = ! $rightToLeft} >
+    <button on:click={ () => rightToLeft.toggle()} >
         {$rightToLeft ? "←": "→"}
     </button>
 </div>
