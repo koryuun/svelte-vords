@@ -55,7 +55,11 @@
             {transform: `translateX(${distance}px)`}
         ]
 
-        const timing = {duration: 1000, iterations: 1}
+        const timing = {
+            duration: 500, 
+            iterations: 1,
+            easing: "ease-in-out"
+        }
 
         const animate = listDiv.animate(animation, timing)
         animate.onfinish = ()=> dispatch("swapAnimationEnd")

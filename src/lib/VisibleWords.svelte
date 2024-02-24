@@ -25,18 +25,29 @@
     let wordList
     let transList
 
+    // Позиции слова и перевода последней угаданной пары. Для замещения новой парой.
     let lastCorrectPair = {wordIdx:null, transIdx:null}
     
     let learnBundle = null
 
+    let swapInProgress = false
+
     onMount(start)
 
     export function swapLeftAndRight() {
-        console.log("swapLeftAndRight")
-
+        if(swapInProgress) {
+            return
+        }
+        swapInProgress = true
         const distance = getListsDictance()
         wordList.startSwapAnimation(distance)
         transList.startSwapAnimation(distance)
+    }
+
+
+    function onSwapAnimationEnd() {
+        rightToLeft.toggle()
+        swapInProgress = false
     }
 
 
@@ -223,7 +234,7 @@
         flyDirection={$rightToLeft ? -1: 1}
         {correct}
         on:selection={onSelect}
-        on:swapAnimationEnd={() => rightToLeft.toggle()}     
+        on:swapAnimationEnd={onSwapAnimationEnd}
         />         
 </div>
 

@@ -7,7 +7,7 @@
   //const apiUrl = 'http://192.168.108.5:3000/words'
   //const apiUrl = 'words/words.csv'
 
-  const version = "0.2.9"
+  const version = "0.2.13"
 
   let deckName
 
@@ -18,7 +18,7 @@
     deckName = event.detail.deckName
     gameOn = true
   }
-  
+
 </script>
 
 <main>    
