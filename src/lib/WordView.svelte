@@ -24,6 +24,10 @@
         if(event.button == 0) {
             dispatch('wordClick', {index})
         }
+    }    
+
+    function onToggleRepeat() {          
+        dispatch('toggleRepeat', {index})        
     }
 
     $: {
@@ -42,14 +46,33 @@
         <div class="word-button" 
             class:selected class:correct class:incorrect
             on:mousedown={onMouseDown}
+            
             in:fly={
                 { duration:500, x:200 * flyDirection, delay:flyDelay}
             }
             out:fade={{ duration:500}}
             on:introstart={onIntroStart}            
             on:outroend={onOutroEnd}
-            >            
-            {word}
+            >     
+            
+                <div></div>
+                <div>{word.word}</div>                                     
+
+                {#if word.repeat === null}
+                    <div></div>
+                {:else}
+                    <div 
+                        class="repeat-button"
+                        class:repeat-selected={word.repeat}
+                        on:mousedown|stopPropagation={onToggleRepeat}>                                     
+                        ⥁
+                    </div>                
+                {/if}
+
+                
+            
+            
+            
         </div>            
     {/if}
 </div>
@@ -61,8 +84,9 @@
         height: 90%;
         display: flex;
         font-size: calc(var(--base) * 0.035 );
-        text-align: center;        
-        justify-content: center;
+        text-align: center;   
+        gap: 10%;     
+        justify-content: space-between;
         align-items: center;
         
         margin: 0;
@@ -122,6 +146,19 @@
         /*display: flex;*/
     }
 
+    .word-button > div {
+        min-width: 10%;
+        margin: 0;        
+    }
+
+    .repeat-button {        
+        margin: 2%;        
+        color: #A0A0A0;
+    }
+    
+    .repeat-selected {
+        color: inherit;
+    }
     
 
 </style>

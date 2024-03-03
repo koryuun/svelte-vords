@@ -20,10 +20,18 @@
     let wordIDs = new Array(VISIBLE_WORDS_COUNT).fill(null);
     let transIDs = new Array(VISIBLE_WORDS_COUNT).fill(null);
 
+    let wordList
+    $: wordList = wordIDs.map( wordID => getWord(wordID))       
+
+    let transList
+    $: transList = transIDs.map( transID => getTrans(transID))
+
+    let wordListComponent
+    let transListComponent
+
     let correct = null
 
-    let wordList
-    let transList
+    
 
     // Позиции слова и перевода последней угаданной пары. Для замещения новой парой.
     let lastCorrectPair = {wordIdx:null, transIdx:null}
@@ -40,10 +48,23 @@
         }
         swapInProgress = true
         const distance = getListsDictance()
-        wordList.startSwapAnimation(distance)
-        transList.startSwapAnimation(distance)
+        wordListComponent.startSwapAnimation(distance)
+        transListComponent.startSwapAnimation(distance)
     }
 
+    function getWord(wordID) {
+        return wordID === null ? null : { 
+            word:learnBundle.getWord(wordID),
+            repeat: learnBundle.getRepeatFlag(wordID)
+        }
+    }
+
+    function getTrans(wordID) {
+        return wordID === null ? null : {
+            word:learnBundle.getTranslation(wordID),
+            repeat:null
+        }
+    }
 
     function onSwapAnimationEnd() {
         rightToLeft.toggle()
@@ -54,16 +75,8 @@
     // Возвращает расстояние между списками слов для анимации
     function getListsDictance() {
 
-        return Math.abs(wordList.getOffsetLeft() - transList.getOffsetLeft())
-    }
-
-    function getWord(wordID) {
-        return wordID === null ? null : learnBundle.getWord(wordID)        
-    }
-
-    function getTrans(wordID) {
-        return wordID === null ? null : learnBundle.getTranslation(wordID)
-    }
+        return Math.abs(wordListComponent.getOffsetLeft() - transListComponent.getOffsetLeft())
+    }    
 
     function getVisibleWordCount() {
         return wordIDs.reduce( (total, value) =>  total + (value ? 1: 0), 0)
@@ -71,7 +84,7 @@
 
     function getTotalWordCount() {        
         if(learnBundle) {            
-            return learnBundle.getWordCount() + wordList.getWordCount()//getVisibleWordCount()
+            return learnBundle.getWordCount() + wordListComponent.getWordCount()//getVisibleWordCount()
         } else {
             return 0
         }
@@ -105,27 +118,24 @@
             lastCorrectPair.wordIdx = null
             lastCorrectPair.transIdx = null
             fillWords()            
-            wordList.init()
-            transList.init()
+            wordListComponent.init()
+            transListComponent.init()
             dispatchWordCountChangedEvent()
             dispatch('gameStart')
         })
 
     }
 
-    export function end() {
-        console.log("End")
+    export function close() {
+        console.log("close")
 
         for(let i = 0; i < VISIBLE_WORDS_COUNT; ++i) {
             wordIDs[i] = null
-            transIDs[i] = null
-            
-        }        
-        learnBundle = null
-
-        dispatchWordCountChangedEvent()
-        //dispatch('gameOver')
+            transIDs[i] = null            
+        }                
+        dispatchWordCountChangedEvent()        
     }
+
 
     function hasCorrectPair() {
         return wordIDs.some(wordID => transIDs.some(
@@ -137,8 +147,8 @@
 
     function resetSelection() {
         correct = null
-        wordList.resetSelection()
-        transList.resetSelection()        
+        wordListComponent.resetSelection()
+        transListComponent.resetSelection()        
     }
 
     function addNewPair() {     
@@ -166,10 +176,17 @@
         }                
     }
 
-    function onSelect() {       
-        console.log('onSelect') 
-        const wordIdx = wordList.getSelected()
-        const transIdx = transList.getSelected()        
+
+    function onToggleRepeat(event) {        
+        const wordID = wordIDs[event.detail.index]
+        learnBundle.toggleRepeatFlag(wordID)
+        //Пинаем чтобы реактивно обновить 
+        wordIDs = wordIDs        
+    }
+
+    function onSelect() {               
+        const wordIdx = wordListComponent.getSelected()
+        const transIdx = transListComponent.getSelected()        
 
         if(wordIdx !== null && transIdx === null) {
             learnBundle.pronounce(wordIDs[wordIdx])
@@ -192,10 +209,15 @@
         setTimeout(() => onEndShowResult(wordIdx, transIdx), 500)
     }
 
+    function gameOver() {
+        learnBundle.saveRepeatFlags()
+        learnBundle = null
+        dispatch('gameOver')
+    }
+
     function onWordRemoved() {        
 
-        if(correct === true) {  
-            console.log('correct=', correct)                              
+        if(correct === true) {              
             dispatchWordCountChangedEvent()
             resetSelection();            
             //Здесь должно быть добавление новой пары взамен удалённой
@@ -203,12 +225,14 @@
             {
                 addNewPair()
             } else {                    
-                if(wordList.isEmpty()) {
-                    dispatch('gameOver')
+                if(wordListComponent.isEmpty()) {
+                    gameOver()
                 }
             }                            
-        } else if(wordList.isEmpty()) {
-            dispatch('gameOver')
+        } else if(wordListComponent.isEmpty()) {
+            //Это исполняется если слово убралось не потому что правильное,
+            //а потому что нажали "Закрыть"
+            gameOver()
         }
 
     }
@@ -221,16 +245,19 @@
 
 
 <div class="visible-words" class:right-to-left={$rightToLeft}>        
-    <WordList            
-        bind:this={wordList} wordIDs={wordIDs} getWord={getWord}
+    <WordList                    
+        bind:this={wordListComponent} 
+        words={wordList}        
         flyDirection={$rightToLeft ? 1: -1}
         {correct}
         on:selection={onSelect}
+        on:toggleRepeat={onToggleRepeat}
         on:wordAdded={dispatchWordCountChangedEvent}
         on:wordRemoved={onWordRemoved}
         />    
     <WordList
-        bind:this={transList} wordIDs={transIDs} getWord={getTrans}
+        bind:this={transListComponent} 
+        words={transList}
         flyDirection={$rightToLeft ? -1: 1}
         {correct}
         on:selection={onSelect}
