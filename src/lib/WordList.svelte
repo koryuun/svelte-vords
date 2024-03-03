@@ -1,10 +1,9 @@
 <script>    
     import { createEventDispatcher } from 'svelte';
     import WordView from "./WordView.svelte"
-
-    export let wordIDs    
+    
+    export let words
     export let flyDirection      
-    export let getWord
     export let correct = null    
     
     const dispatch = createEventDispatcher()
@@ -103,13 +102,14 @@
 
 
 <div class="word-list" bind:this={listDiv}>
-    {#each wordIDs as wordID, index}
+    {#each words as word, index}
       <WordView 
-        word={getWord(wordID)} {index} 
+        {word} {index} 
         state={{selected:selected === index, correct}} 
         {flyDirection} 
         flyDelay={index * flyDelay}
         on:wordClick={wordClick}
+        on:toggleRepeat
         on:wordAdded={onWordAdded}
         on:wordRemoved={onWordRemoved}
         />      

@@ -16,7 +16,7 @@
 
 <div class="game-view {className}">    
     <GamePanel 
-        on:close={()=>child.end()}          
+        on:close={()=>child.close()}          
         on:swapLeftRight={() => child.swapLeftAndRight()  }
         {wordsLeft} />
     <VisibleWords 

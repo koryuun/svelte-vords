@@ -1,10 +1,14 @@
+// Эта фигня сюда вписана потому что VSCode выдаёт непонятные
+// ошибки, похожие на ошибки TypeScript, хотя это Javascript
+// @ts-nocheck
+
+
 import _ from 'lodash'
 
 const decksPath = 'decks'
 
-let words 
-
-
+// Максимальное количество слов в одной игре
+const WORDS_IN_GAME = 20
 
 function parseCSV(csvStr) {
     return csvStr.split('\n').map(line => {
@@ -13,19 +17,25 @@ function parseCSV(csvStr) {
 }
 
 class LearnBundle {
-    constructor(words, deckPath) {
-        const soundPath = [deckPath, 'sound'].join('/')
+    constructor(allWords, deckPath) {
+        this.deckPath = deckPath
 
+        this.repeatWordsSet = this.loadRepeatWords()
+
+        const chosenWords = this.chooseWords(allWords)
+
+        const soundPath = [deckPath, 'sound'].join('/')
         
-        this.words = new Map(words.map(wordInfo => {   
-            let soundName = wordInfo[1].sound
+        this.words = new Map(chosenWords.map(wordInfo => {   
+            let soundName = wordInfo.sound
             if(!soundName) {
                 // Если нет имени файла для произношения,
-                // пытаемся создать его из слова.
-                soundName = wordInfo[1].word + '.mp3'
+                // пытаемся создать его из слова.                
+                soundName = wordInfo.word + '.mp3'
             }
-            const sound = new Audio([soundPath, soundName].join('/'))                        
-            return [wordInfo[0], {...wordInfo[1], sound }]
+            const sound = new Audio([soundPath, soundName].join('/'))            
+            const newWordObj = {..._.omit(wordInfo,'id'), sound }                               
+            return [wordInfo.id, newWordObj]
         }))
         
         this.wordSet = [...this.words.keys()]
@@ -33,8 +43,72 @@ class LearnBundle {
 
         this.getWord = this.getWord.bind(this)
         this.getTranslation = this.getTranslation.bind(this)
+        this.getRepeatFlag = this.getRepeatFlag.bind(this)
+        this.toggleRepeatFlag = this.toggleRepeatFlag.bind(this)
+        this.saveRepeatFlags = this.saveRepeatFlags.bind(this)
+    }
+
+    chooseWords(allWords) {
+        const repeatWords = []
+        const noRepeatWords = []
+
+        allWords.forEach(element => {
+            if( this.repeatWordsSet.has(element.word) ) {
+                repeatWords.push(element)
+            } else {
+                noRepeatWords.push(element)
+            }
+        });
+
+
+        if(repeatWords.length  < this.repeatWordsSet.size) {
+            console.log("Cleaning needed!")
+            //!!!
+            // Тут неплохо бы добавить чистку списка слов для повторения
+            // чтобы не замусоривался отстутвующими словами
+            // Для этого выкинуть из repeatWordsSet всё, чего нет в repeatWords
+            // Потому что если всё правильно, то слова в них должны совпадать.            
+            
+        }
+
+        let chosen = _.sampleSize(repeatWords, WORDS_IN_GAME)
+        const wordsLeftCount = WORDS_IN_GAME - chosen.length
+        if(wordsLeftCount > 0) {
+            const sample = _.sampleSize(noRepeatWords, wordsLeftCount)            
+            chosen = chosen.concat(sample)  
+        }
+        return chosen
+    }
+
+    getStorageKey() {
+        return "wordpairs/" + this.deckPath + "/repeatWords"
+    }
+
+    loadRepeatWords() {
+        const storedStr = localStorage.getItem(this.getStorageKey())
+        if(!storedStr) {
+            return new Set()
+        }
+        
+        let repeatWords
+
+        try {
+            const arr = JSON.parse(storedStr)
+            repeatWords = new Set(arr)
+        } catch(e) {
+            console.log(e.message)
+            repeatWords = new Set()
+        }
+        return repeatWords
     }
     
+    saveRepeatFlags() {
+        console.log("saveRepeatFlags")
+        const repeatWords = Array.from(this.repeatWordsSet)
+        const repeatWordsStr = JSON.stringify(repeatWords)        
+        localStorage.setItem(this.getStorageKey(), repeatWordsStr)        
+        console.log(repeatWords)
+    }
 
     removePair(wordID, transID) {
         _.pull(this.wordSet, wordID)
@@ -82,7 +156,22 @@ class LearnBundle {
 
     getTranslation(id) {
         return this.words.get(id).trans        
-    }    
+    }
+
+    getRepeatFlag(id) {
+        const word = this.words.get(id).word        
+        return this.repeatWordsSet.has(word)
+    }
+
+    toggleRepeatFlag(id) {
+        const word = this.words.get(id).word
+        const repeat = this.repeatWordsSet.has(word)
+        if(repeat) {
+            this.repeatWordsSet.delete(word)
+        } else {
+            this.repeatWordsSet.add(word)
+        }        
+    }
 
     /**
     * Проверяет корректность пары.    
@@ -116,10 +205,13 @@ export async function loadWords(deckName) {
         .then(res => res.text())
         .then(x => {
             const allWords = parseCSV(x).map( (wordPair, idx) => {
-                return [idx, {'word':wordPair[0], 'trans':wordPair[1], 'sound': wordPair[2]}]
-            })            
-            words =_.sampleSize(allWords, 20)
-            return new LearnBundle(words, deckPath)
+                return {
+                    'id': idx,
+                    'word':wordPair[0], 
+                    'trans':wordPair[1], 
+                    'sound': wordPair[2]}
+            })                        
+            return new LearnBundle(allWords, deckPath)
         })        
 }
 
