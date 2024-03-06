@@ -55,17 +55,27 @@
             on:outroend={onOutroEnd}
             >     
             
-                <div></div>
+                <div>&nbsp;</div>
                 <div>{word.word}</div>                                     
 
                 {#if word.repeat === null}
-                    <div></div>
+                    <div>&nbsp;</div>
                 {:else}
                     <div 
                         class="repeat-button"
                         class:repeat-selected={word.repeat}
-                        on:mousedown|stopPropagation={onToggleRepeat}>                                     
-                        ⥁
+                        on:mousedown|stopPropagation={onToggleRepeat}>                                                             
+                        <!-- https://lucide.dev/ -->
+                        <svg 
+                            viewBox="0 0 24 24" fill="none" 
+                            stroke="currentColor" stroke-width="2" 
+                            stroke-linecap="round" stroke-linejoin="round" 
+                            class="lucide lucide-repeat">
+                            <path d="m17 2 4 4-4 4"/>
+                            <path d="M3 11v-1a4 4 0 0 1 4-4h14"/>
+                            <path d="m7 22-4-4 4-4"/>
+                            <path d="M21 13v1a4 4 0 0 1-4 4H3"/>
+                        </svg>
                     </div>                
                 {/if}
 
@@ -148,17 +158,23 @@
 
     .word-button > div {
         min-width: 10%;
-        margin: 0;        
+        margin: 0;          
     }
 
     .repeat-button {        
         margin: 2%;        
         color: #A0A0A0;
+        /* Чтобы не устанавливалась странная высота */
+        line-height: 0;
     }
     
     .repeat-selected {
         color: inherit;
     }
     
+    .lucide-repeat {        
+        width: calc(var(--base) * 0.04 );
+        height: auto;
+    }
 
 </style>

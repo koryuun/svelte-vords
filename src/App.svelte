@@ -7,7 +7,7 @@
   //const apiUrl = 'http://192.168.108.5:3000/words'
   //const apiUrl = 'words/words.csv'
 
-  const version = "0.3.1"
+  const version = "0.3.3"
 
   let deckName
 
