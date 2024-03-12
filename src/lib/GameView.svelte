@@ -1,29 +1,50 @@
 <script>
     import GamePanel from "./GamePanel.svelte";
     import VisibleWords from "./VisibleWords.svelte"
+    import { rightToLeft } from './stores'
 
     export let className = ""
     export let deckName
 
     let child
+    let panel
     let wordsLeft
+
+    let swapInProgress = false
     
     function onVisibleWordCountChanged(event) {
         wordsLeft = event.detail.wordCount
     }
 
+    function onSwapLeftAndRight() {        
+        if(swapInProgress) {
+            return
+        }
+        swapInProgress = true
+        child.swapLeftAndRight()
+        panel.aninimateSwap()
+    }
+
+    function onSwapAnimationEnd() {
+        rightToLeft.toggle()
+        swapInProgress = false
+    }
+
+
 </script>
 
 <div class="game-view {className}">    
     <GamePanel 
+        bind:this={panel}
         on:close={()=>child.close()}          
-        on:swapLeftRight={() => child.swapLeftAndRight()  }
+        on:swapLeftRight={onSwapLeftAndRight}
         {wordsLeft} />
     <VisibleWords 
       deckName={deckName}
       bind:this={child}       
       on:gameOver
-      on:wordCountChanged={onVisibleWordCountChanged}/>    
+      on:wordCountChanged={onVisibleWordCountChanged}
+      on:swapAnimationEnd={onSwapAnimationEnd}/>    
 </div>
 
 

@@ -37,16 +37,10 @@
     let lastCorrectPair = {wordIdx:null, transIdx:null}
     
     let learnBundle = null
-
-    let swapInProgress = false
-
+    
     onMount(start)
 
-    export function swapLeftAndRight() {
-        if(swapInProgress) {
-            return
-        }
-        swapInProgress = true
+    export function swapLeftAndRight() {        
         const distance = getListsDictance()
         wordListComponent.startSwapAnimation(distance)
         transListComponent.startSwapAnimation(distance)
@@ -65,12 +59,6 @@
             repeat:null
         }
     }
-
-    function onSwapAnimationEnd() {
-        rightToLeft.toggle()
-        swapInProgress = false
-    }
-
 
     // Возвращает расстояние между списками слов для анимации
     function getListsDictance() {
@@ -261,7 +249,7 @@
         flyDirection={$rightToLeft ? -1: 1}
         {correct}
         on:selection={onSelect}
-        on:swapAnimationEnd={onSwapAnimationEnd}
+        on:swapAnimationEnd
         />         
 </div>
 

@@ -1,11 +1,18 @@
 <script>
     import { createEventDispatcher} from 'svelte'
+    import { tweened } from 'svelte/motion'
 
     import { rightToLeft } from './stores'
 
     export let wordsLeft
 
     const dispatch = createEventDispatcher()
+
+    const swapBtnRotation = tweened(0, {duration:500})
+
+    export function aninimateSwap() {
+        $swapBtnRotation= $rightToLeft ? 0: 0.5
+    }
     
 </script>
 
@@ -17,20 +24,16 @@
         {/if}        
     </div>
         
-    <button on:click={ ()=> dispatch("swapLeftRight") }>
-        <!-- {$rightToLeft ? "←": "→"} -->
-        <div style="transform: rotateY({$rightToLeft ? "0.5turn": "0turn"});">            
-            <svg            
-                viewBox="0 0 24 24" fill="none" 
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-                class="lucide lucide-arrow-right-left">
-                <path d="m16 3 4 4-4 4"/>
-                <path d="M20 7H4"/>
-                <path d="m8 21-4-4 4-4"/>
-                <path d="M4 17h16"/>
-            </svg>
-        </div>
-
+    <button on:click={ ()=> dispatch("swapLeftRight") }>        
+        <svg style="transform: rotateY({`${$swapBtnRotation}turn`});"
+            viewBox="0 0 24 24" fill="none" 
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+            class="lucide lucide-arrow-right-left">
+            <path d="m16 3 4 4-4 4"/>
+            <path d="M20 7H4"/>
+            <path d="m8 21-4-4 4-4"/>
+            <path d="M4 17h16"/>
+        </svg>        
     </button>
     <button on:click={() =>dispatch('close')}>        
         <svg 
@@ -66,7 +69,7 @@
 
     .info {
         font-size: calc(var(--base) * 0.04 );  
-        color: black;
+        color: black;        
     }
 
     .lucide-arrow-right-left, .lucide-x{
