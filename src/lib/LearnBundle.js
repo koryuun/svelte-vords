@@ -7,20 +7,34 @@ import _ from 'lodash'
 
 const decksPath = 'decks'
 
+export const WORD = 0
+export const TRANSLATION = 1
+
 // Максимальное количество слов в одной игре
 const WORDS_IN_GAME = 20
 
 function parseCSV(csvStr) {
-    return csvStr.split('\n').map(line => {
-        return line.split(';').map( field => field.trim())
+    const result = []
+    
+
+    csvStr.split('\n').forEach(line => {
+        const trimmed = line.trim()
+        if(trimmed !== "") {
+            const fields = line.split(';').map( field => field.trim())
+            result.push(fields) 
+        }        
     })
+    return result
 }
 
 class LearnBundle {
     constructor(allWords, deckPath) {
         this.deckPath = deckPath
 
-        this.repeatWordsSet = this.loadRepeatWords()
+        this.repeatSets = [ 
+            this.loadRepeatWords(WORD), this.loadRepeatWords(TRANSLATION)
+        ]
+        
 
         const chosenWords = this.chooseWords(allWords)
 
@@ -52,8 +66,13 @@ class LearnBundle {
         const repeatWords = []
         const noRepeatWords = []
 
+        const jointSet = new Set(
+            [...this.repeatSets[WORD], ...this.repeatSets[TRANSLATION]] )
+        
+        console.log("jointSet = ", jointSet)
+            
         allWords.forEach(element => {
-            if( this.repeatWordsSet.has(element.word) ) {
+            if( jointSet.has(element.word) ) {
                 repeatWords.push(element)
             } else {
                 noRepeatWords.push(element)
@@ -61,14 +80,12 @@ class LearnBundle {
         });
 
 
-        if(repeatWords.length  < this.repeatWordsSet.size) {
+        if(repeatWords.length  < this.repeatSets[WORD]
+            ||repeatWords.length  < this.repeatSets[TRANSLATION] ) {
             console.log("Cleaning needed!")
             //!!!
             // Тут неплохо бы добавить чистку списка слов для повторения
-            // чтобы не замусоривался отстутвующими словами
-            // Для этого выкинуть из repeatWordsSet всё, чего нет в repeatWords
-            // Потому что если всё правильно, то слова в них должны совпадать.            
-            
+            // чтобы не замусоривался отсутствующими словами                        
         }
 
         let chosen = _.sampleSize(repeatWords, WORDS_IN_GAME)
@@ -80,12 +97,13 @@ class LearnBundle {
         return chosen
     }
 
-    getStorageKey() {
-        return "wordpairs/" + this.deckPath + "/repeatWords"
-    }
+    getRepeatStgKey(itemType) {
+        return "wordpairs/" + this.deckPath + (itemType ? "/repeatWords" : "/repeatTrans")
+    }    
 
-    loadRepeatWords() {
-        const storedStr = localStorage.getItem(this.getStorageKey())
+    loadRepeatWords(itemType) {
+        const key = this.getRepeatStgKey(itemType)
+        const storedStr = localStorage.getItem(key)
         if(!storedStr) {
             return new Set()
         }
@@ -103,11 +121,13 @@ class LearnBundle {
     }
     
     saveRepeatFlags() {
-        console.log("saveRepeatFlags")
-        const repeatWords = Array.from(this.repeatWordsSet)
-        const repeatWordsStr = JSON.stringify(repeatWords)        
-        localStorage.setItem(this.getStorageKey(), repeatWordsStr)        
-        console.log(repeatWords)
+        const saveRepeatSet = (itemType) => {            
+            const repeatWords = Array.from(this.repeatSets[itemType])
+            const repeatWordsStr = JSON.stringify(repeatWords)        
+            localStorage.setItem(this.getRepeatStgKey(itemType), repeatWordsStr)
+        }
+        saveRepeatSet(WORD)                       
+        saveRepeatSet(TRANSLATION)
     }
 
     removePair(wordID, transID) {
@@ -158,18 +178,23 @@ class LearnBundle {
         return this.words.get(id).trans        
     }
 
-    getRepeatFlag(id) {
+    getRepeatFlag(itemType, id) {
         const word = this.words.get(id).word        
-        return this.repeatWordsSet.has(word)
+        return this.repeatSets[itemType].has(word)
     }
-
-    toggleRepeatFlag(id) {
+    
+    toggleRepeatFlag(itemType, id) {
         const word = this.words.get(id).word
-        const repeat = this.repeatWordsSet.has(word)
+
+        console.log(word)
+
+        const repeatSet = this.repeatSets[itemType]
+
+        const repeat = repeatSet.has(word)
         if(repeat) {
-            this.repeatWordsSet.delete(word)
+            repeatSet.delete(word)
         } else {
-            this.repeatWordsSet.add(word)
+            repeatSet.add(word)
         }        
     }
 
@@ -204,7 +229,7 @@ export async function loadWords(deckName) {
     return fetch(csvPah)        
         .then(res => res.text())
         .then(x => {
-            const allWords = parseCSV(x).map( (wordPair, idx) => {
+            const allWords = parseCSV(x).map( (wordPair, idx) => {                
                 return {
                     'id': idx,
                     'word':wordPair[0], 

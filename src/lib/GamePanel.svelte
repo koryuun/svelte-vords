@@ -8,7 +8,7 @@
 
     const dispatch = createEventDispatcher()
 
-    const swapBtnRotation = tweened(0, {duration:500})
+    const swapBtnRotation = tweened($rightToLeft ? 0.5: 0, {duration:500})
 
     export function aninimateSwap() {
         $swapBtnRotation= $rightToLeft ? 0: 0.5

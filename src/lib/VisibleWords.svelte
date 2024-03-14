@@ -4,7 +4,7 @@
     
     import { createEventDispatcher, onMount } from 'svelte'
     
-    import { loadWords } from './LearnBundle'
+    import { TRANSLATION, WORD, loadWords } from './LearnBundle'
     import { rightToLeft } from './stores'
     import { playCorrect, playWrong } from './sound'
     import WordList from "./WordList.svelte"    
@@ -49,14 +49,14 @@
     function getWord(wordID) {
         return wordID === null ? null : { 
             word:learnBundle.getWord(wordID),
-            repeat: learnBundle.getRepeatFlag(wordID)
+            repeat: learnBundle.getRepeatFlag(WORD,wordID)
         }
     }
 
     function getTrans(wordID) {
         return wordID === null ? null : {
             word:learnBundle.getTranslation(wordID),
-            repeat:null
+            repeat:learnBundle.getRepeatFlag(TRANSLATION,wordID)
         }
     }
 
@@ -165,11 +165,19 @@
     }
 
 
-    function onToggleRepeat(event) {        
-        const wordID = wordIDs[event.detail.index]
-        learnBundle.toggleRepeatFlag(wordID)
-        //Пинаем чтобы реактивно обновить 
-        wordIDs = wordIDs        
+    function onToggleRepeat(event, itemType) {                        
+        if(itemType === WORD) {
+            const wordID = wordIDs[event.detail.index]
+            learnBundle.toggleRepeatFlag(itemType,wordID)
+            //Пинаем чтобы реактивно обновить 
+            wordIDs = wordIDs
+        } else {
+            const transID = transIDs[event.detail.index]
+            learnBundle.toggleRepeatFlag(itemType,transID)
+            //Пинаем чтобы реактивно обновить 
+            transIDs = transIDs
+        }
+                
     }
 
     function onSelect() {               
@@ -239,7 +247,7 @@
         flyDirection={$rightToLeft ? 1: -1}
         {correct}
         on:selection={onSelect}
-        on:toggleRepeat={onToggleRepeat}
+        on:toggleRepeat={(event) => onToggleRepeat(event, WORD)}
         on:wordAdded={dispatchWordCountChangedEvent}
         on:wordRemoved={onWordRemoved}
         />    
@@ -249,6 +257,7 @@
         flyDirection={$rightToLeft ? -1: 1}
         {correct}
         on:selection={onSelect}
+        on:toggleRepeat={(event ) => onToggleRepeat(event, TRANSLATION)}
         on:swapAnimationEnd
         />         
 </div>

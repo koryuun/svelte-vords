@@ -93,7 +93,7 @@
     .word-button {                
         height: 90%;
         display: flex;
-        font-size: calc(var(--base) * 0.035 );
+        font-size: calc(var(--base) * 0.032 );
         text-align: center;   
         gap: 10%;     
         justify-content: space-between;
