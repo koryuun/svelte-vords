@@ -98,7 +98,7 @@ class LearnBundle {
     }
 
     getRepeatStgKey(itemType) {
-        return "wordpairs/" + this.deckPath + (itemType ? "/repeatWords" : "/repeatTrans")
+        return "wordpairs/" + this.deckPath + (itemType ?  "/repeatTrans" : "/repeatWords")
     }    
 
     loadRepeatWords(itemType) {
