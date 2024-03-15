@@ -24,6 +24,7 @@ function clickHandler(deckName) {
 
 <div class="deck-selection {className}">
     <button on:click={clickHandler("words")} >Words</button>
+	<button on:click={clickHandler("verbs")} >Verbs</button>
     <button on:click={clickHandler("sanat")} >Sanat</button>
     <button on:click={clickHandler("verbit")} >Verbit</button>    
 </div>
