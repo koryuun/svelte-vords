@@ -49,19 +49,21 @@
 
 
 <style>
-    .game-view {            
-            /*background: yellow;*/
-            --base: 700px; 
+    .game-view { 
+            /* Отношение высоты к ширине */         
+            --hwratio: 0.6;
+            /* Ширина, которая вычислена из ширины окна */
+            --width-from-width: calc(min(95vw , 800px));
+            /* Ширина, которая вычислена из высоты окна */
+            --width-from-height: calc(95vh / var(--hwratio));
+            /* Окончательная ширина, 
+            которая рассчитывается так чтобы всё всегда влезало */
+            --base: calc(min(var(--width-from-width),
+                            var(--width-from-height)));
             width: var(--base);
-            height: calc(var(--base) * 0.6 );
+            height: calc(var(--base) * var(--hwratio) );
             display: flex;
             flex-direction: column;
     }
-
-    @media screen and (max-width: 736px) {
-        .game-view {            
-            /*background: red;*/
-            --base: 95vw;             
-        }
-    }
+    
 </style>
