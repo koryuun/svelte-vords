@@ -57,14 +57,14 @@
     button {
         --size:calc(var(--base)* 0.06);
         text-align: center;
-        font-size: calc(var(--size) * 0.5 );         
+        font-size: calc(var(--size) * 0.5 );
         border-radius: 50%;
-        border-width: calc(var(--size) * 0.05 );        
-        padding: 0%;        
+        border-width: calc(var(--size) * 0.05 );
+        padding: 0%;
         height: var(--size);
-        width: var(--size);   
+        width: var(--size);
         /* Чтобы не устанавливалась странная высота */
-        line-height: 0;     
+        line-height: 0;
     }
 
     .info {

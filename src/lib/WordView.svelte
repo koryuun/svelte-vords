@@ -110,7 +110,7 @@
         cursor: default;
 
       
-        background-color: #E6E6E6; 
+        background-color: #E6E6E6;
         border-color: #D9D9D9;
         color: #000000;
     }
