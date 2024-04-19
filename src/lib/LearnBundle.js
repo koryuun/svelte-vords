@@ -31,6 +31,8 @@ class LearnBundle {
     constructor(allWords, deckPath) {
         this.deckPath = deckPath
 
+        this.allWordsCount = allWords.length
+
         this.repeatSets = [ 
             this.loadRepeatWords(WORD), this.loadRepeatWords(TRANSLATION)
         ]

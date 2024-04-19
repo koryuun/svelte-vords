@@ -12,6 +12,7 @@
 
 
     export let deckName
+    export let allWordsCount = 0
 
     const VISIBLE_WORDS_COUNT = 5
 
@@ -108,6 +109,8 @@
             fillWords()            
             wordListComponent.init()
             transListComponent.init()
+            allWordsCount = learnBundle.allWordsCount
+            console.log("allWordsCount=", allWordsCount)
             dispatchWordCountChangedEvent()
             dispatch('gameStart')
         })

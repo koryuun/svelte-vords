@@ -9,6 +9,7 @@
     let child
     let panel
     let wordsLeft
+    let allWordsCount
 
     let swapInProgress = false
     
@@ -38,9 +39,11 @@
         bind:this={panel}
         on:close={()=>child.close()}          
         on:swapLeftRight={onSwapLeftAndRight}
-        {wordsLeft} />
+        {wordsLeft}
+        {allWordsCount} />
     <VisibleWords 
       deckName={deckName}
+      bind:allWordsCount
       bind:this={child}       
       on:gameOver
       on:wordCountChanged={onVisibleWordCountChanged}

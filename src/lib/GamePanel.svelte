@@ -5,6 +5,7 @@
     import { rightToLeft } from './stores'
 
     export let wordsLeft
+    export let allWordsCount
 
     const dispatch = createEventDispatcher()
 
@@ -20,10 +21,12 @@
 <div class=game-panel>        
     <div class="info">
         {#if wordsLeft}
-            {wordsLeft}
-        {/if}        
+            {wordsLeft} из
+            {allWordsCount}
+        {/if}
     </div>
         
+    <div>
     <button on:click={ ()=> dispatch("swapLeftRight") }>        
         <svg style="transform: rotateY({`${$swapBtnRotation}turn`});"
             viewBox="0 0 24 24" fill="none" 
@@ -44,6 +47,7 @@
             <path d="m6 6 12 12"/>
         </svg>        
     </button>
+    </div>
 </div>
 
 <style>    
